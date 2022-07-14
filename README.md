@@ -11,8 +11,19 @@ A React Native onboard project for Taqtile
 
 ## Steps to run and debug
 
-After you start a virtual device on Android Studio run:
+Install the dependencies
 ```bash
+npm install
+```
+
+After you start a virtual device on Android Studio run:
+
+```bash
+# This following command starts Metro Bundler.
 npx react-native start 
+```
+
+```bash
+# this following command starts your application
 npx react-native run-android
 ```
