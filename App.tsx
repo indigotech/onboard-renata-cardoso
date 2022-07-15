@@ -2,26 +2,23 @@ import React from 'react';
 import {
   SafeAreaView,
   StatusBar,
-  StyleSheet,
-  Text,
 } from 'react-native';
+import { LoginPage } from './src/screens/login/login-page';
 
 
 const App = () => {
 
   return (
     <SafeAreaView >
-      <StatusBar />
-      <Text style={styles.highlight}>Hello World</Text>
+      <StatusBar 
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      <LoginPage />
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  highlight: {
-    fontWeight: '700',
-    fontSize: 24,
-  },
-});
 
 export default App;
