@@ -1,16 +1,11 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-} from 'react-native';
-import { LoginPage } from './src/screens/login/login-page';
-
+import {SafeAreaView, StatusBar} from 'react-native';
+import {LoginPage} from './src/screens/login/login-page';
 
 const App = () => {
-
   return (
-    <SafeAreaView >
-      <StatusBar 
+    <SafeAreaView>
+      <StatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent
@@ -19,6 +14,5 @@ const App = () => {
     </SafeAreaView>
   );
 };
-
 
 export default App;
