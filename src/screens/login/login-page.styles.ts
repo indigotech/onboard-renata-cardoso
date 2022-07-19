@@ -43,5 +43,10 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 14,
+    },
+    textError:{
+        color: '#FF0000',
+        fontSize: 14,
+        marginTop: 14,
     }
 });
