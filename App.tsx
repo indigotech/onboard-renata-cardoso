@@ -1,15 +1,10 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
 import {LoginPage} from './src/screens/login/login-page';
+import {client} from './src/screens/login/login-mutation'
 
 const App = () => {
-
-  const client = new ApolloClient({
-    uri: 'https://tq-template-server-sample.herokuapp.com/graphql',
-    cache: new InMemoryCache(),
-  });
-  
   return (
     <ApolloProvider client={client}>
       <SafeAreaView>
