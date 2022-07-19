@@ -1,8 +1,9 @@
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { styles } from './login-page.styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native'
 import {
   emailIsValid,
   isEmpty,
@@ -11,11 +12,19 @@ import {
   passwordHasValidLength
 } from './login-validation';
 import {LOGIN_MUTATION} from './login-mutation'
+import { RootStackParamList } from '../../routes/app.routes';
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [login] = useMutation(LOGIN_MUTATION);
 
@@ -33,13 +42,26 @@ export const LoginPage = () => {
     }
   };
 
+  const navigation = useNavigation();
+
   const handleSubmit = async () => {
     loginValidation();
-    if (errorMessage.length === 0) {
-      const data = await login({variables: {email, password}})
-      await AsyncStorage.setItem('token', data.data.login.token)
+    
+    try{
+     if (errorMessage.length === 0) {
+       setLoading(true)
+       const data = await login({variables: {email, password}})
+       await AsyncStorage.setItem('token', data.data.login.token)
+       navigation.navigate('Home');
     }
-  };
+  }
+  catch(error){
+    setErrorMessage(error.message);
+  } 
+  finally {
+    setLoading(false);
+  }
+};
 
   return (
     <View style={styles.container}>
@@ -56,9 +78,10 @@ export const LoginPage = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.textButton}>Entrar</Text>
-      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
+          {loading && <ActivityIndicator color='#FFFFFF' size='large'/>}
+          <Text style={styles.textButton}>{loading ? 'Loading' : 'Entrar'}</Text>
+      </TouchableOpacity> 
       {errorMessage && <Text style={styles.textError}>{errorMessage}</Text>}
     </View>
   );

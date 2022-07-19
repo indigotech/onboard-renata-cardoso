@@ -35,6 +35,8 @@ export const styles = StyleSheet.create({
         borderRadius: 14,
         alignSelf: 'center',
         marginTop: 32,
+        flexDirection: 'row', 
+        justifyContent: 'center'
 
     },
     textButton:{
