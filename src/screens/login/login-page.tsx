@@ -6,7 +6,7 @@ import {
   isEmpty,
   passwordHasLetter,
   passwordHasNumber,
-  passwordHasLength,
+  passwordHasValidLength,
 } from './login-validation';
 
 export const LoginPage = () => {
@@ -15,11 +15,11 @@ export const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const loginValidation = () => {
-    if (isEmpty(email, password)) {
+    if (isEmpty(email) || isEmpty(password)) {
       setErrorMessage('Campos não devem estar vazios');
     } else if (!emailIsValid(email)) {
       setErrorMessage('Email inválido');
-    } else if (!passwordHasLength(password)) {
+    } else if (!passwordHasValidLength(password)) {
       setErrorMessage('Senha deve ter pelo menos 7 dígitos');
     } else if (!passwordHasNumber(password)) {
       setErrorMessage('Senha deve conter pelo menos um número');
