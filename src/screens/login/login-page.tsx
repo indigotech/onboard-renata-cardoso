@@ -1,18 +1,23 @@
-import React, {useState} from 'react';
-import {Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {styles} from './login-page.styles';
+import { gql, useMutation } from '@apollo/client';
+import React, { useState } from 'react';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { styles } from './login-page.styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   emailIsValid,
   isEmpty,
   passwordHasLetter,
   passwordHasNumber,
-  passwordHasValidLength,
+  passwordHasValidLength
 } from './login-validation';
+import {LOGIN_MUTATION} from './login-mutation'
 
 export const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [login] = useMutation(LOGIN_MUTATION);
 
   const loginValidation = () => {
     if (isEmpty(email) || isEmpty(password)) {
@@ -28,8 +33,12 @@ export const LoginPage = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     loginValidation();
+    if (errorMessage.length === 0) {
+      const data = await login({variables: {email, password}})
+      await AsyncStorage.setItem('token', data.data.login.token)
+    }
   };
 
   return (
