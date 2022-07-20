@@ -17,9 +17,8 @@ export const LoginPage = (props: { componentId: string }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const [login] = useMutation(LOGIN_MUTATION);
+  const [login, {loading}] = useMutation(LOGIN_MUTATION);
 
   const loginValidation = () => {
     if (isEmpty(email) || isEmpty(password)) {
@@ -40,7 +39,6 @@ export const LoginPage = (props: { componentId: string }) => {
 
     try {
       if (errorMessage.length === 0) {
-        setLoading(true)
         const data = await login({ variables: { email, password } })
         await AsyncStorage.setItem('token', data.data.login.token)
         Navigation.push(props.componentId, {
@@ -59,9 +57,6 @@ export const LoginPage = (props: { componentId: string }) => {
     }
     catch (error) {
       setErrorMessage(error.message);
-    }
-    finally {
-      setLoading(false);
     }
   };
 
