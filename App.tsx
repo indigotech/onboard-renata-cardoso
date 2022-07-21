@@ -1,22 +1,14 @@
-import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
-import {LoginPage} from './src/screens/login/login-page';
-import {client} from './src/screens/login/login-mutation'
 
-const App = (props: any) => {
-  return (
-    <ApolloProvider client={client}>
-      <SafeAreaView>
-        <StatusBar
-          barStyle="dark-content"
-          backgroundColor="transparent"
-          translucent
-        />
-        <LoginPage componentId={props.componentId} />
-    </SafeAreaView>
-    </ApolloProvider>
-  );
-};
+const App = () => (
+  <SafeAreaView>
+    <StatusBar
+      barStyle="dark-content"
+      backgroundColor="transparent"
+      translucent
+    />
+  </SafeAreaView>
+);
 
 export default App;

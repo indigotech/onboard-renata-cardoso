@@ -1,19 +1,26 @@
-import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
-import { ActivityIndicator, AsyncStorage, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Navigation } from 'react-native-navigation';
-import { HomePage } from '../home/home-page';
-import { LOGIN_MUTATION } from './login-mutation';
-import { styles } from './login-page.styles';
+import {useMutation} from '@apollo/client';
+import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  AsyncStorage,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {Navigation} from 'react-native-navigation';
+import {HomePage} from '../home/home-page';
+import {LOGIN_MUTATION} from './login-mutation';
+import {styles} from './login-page.styles';
 import {
   emailIsValid,
   isEmpty,
   passwordHasLetter,
   passwordHasNumber,
-  passwordHasValidLength
+  passwordHasValidLength,
 } from './login-validation';
 
-export const LoginPage = (props: { componentId: string }) => {
+export const LoginPage = (props: {componentId: string}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -39,24 +46,15 @@ export const LoginPage = (props: { componentId: string }) => {
 
     try {
       if (errorMessage.length === 0) {
-        const data = await login({ variables: { email, password } })
-        await AsyncStorage.setItem('token', data.data.login.token)
+        const data = await login({variables: {email, password}});
+        await AsyncStorage.setItem('token', data.data.login.token);
+
         Navigation.push(props.componentId, {
-          component: {
-            name: 'HomePage',
-            options: {
-              topBar: {
-                title: {
-                  text: 'HomePage',
-                },
-              },
-            },
-          },
+          component: HomePage,
         });
       }
-    }
-    catch (error) {
-      setErrorMessage(error.message);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -75,30 +73,14 @@ export const LoginPage = (props: { componentId: string }) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
-        {loading && <ActivityIndicator color='#FFFFFF' size='large' />}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit}
+        disabled={loading}>
+        {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
         <Text style={styles.textButton}>{loading ? 'Loading' : 'Entrar'}</Text>
       </TouchableOpacity>
       {errorMessage && <Text style={styles.textError}>{errorMessage}</Text>}
     </View>
   );
 };
-
-Navigation.registerComponent('Login', () => LoginPage);
-Navigation.registerComponent('HomePage', () => HomePage);
-
-Navigation.events().registerAppLaunchedListener(async () => {
-  Navigation.setRoot({
-    root: {
-      stack: {
-        children: [
-          {
-            component: {
-              name: 'Login'
-            }
-          }
-        ]
-      }
-    }
-  });
-});
