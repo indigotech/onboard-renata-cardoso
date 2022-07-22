@@ -11,8 +11,9 @@ import {
   passwordHasValidLength
 } from './login-validation';
 import {LOGIN_MUTATION} from './login-mutation'
+import { NavigationComponentProps } from 'react-native-navigation';
 
-export const LoginPage = () => {
+export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
