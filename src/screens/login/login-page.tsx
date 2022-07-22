@@ -2,12 +2,12 @@ import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
 import {HomePage} from '../home/home-page';
 import {LOGIN_MUTATION} from './login-mutation';
@@ -19,8 +19,9 @@ import {
   passwordHasNumber,
   passwordHasValidLength,
 } from './login-validation';
+import {NavigationComponentProps} from 'react-native-navigation';
 
-export const LoginPage = (props: {componentId: string}) => {
+export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -43,16 +44,12 @@ export const LoginPage = (props: {componentId: string}) => {
 
   const handleSubmit = async () => {
     loginValidation();
-
     try {
-      if (errorMessage.length === 0) {
-        const data = await login({variables: {email, password}});
-        await AsyncStorage.setItem('token', data.data.login.token);
-
-        Navigation.push(props.componentId, {
-          component: HomePage,
-        });
-      }
+      const result = await login({variables: {email, password}});
+      await AsyncStorage.setItem('token', result.data.login.token);
+      Navigation.push(props.componentId, {
+        component: HomePage,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -80,7 +77,7 @@ export const LoginPage = (props: {componentId: string}) => {
         {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
         <Text style={styles.textButton}>{loading ? 'Loading' : 'Entrar'}</Text>
       </TouchableOpacity>
-      {errorMessage && <Text style={styles.textError}>{errorMessage}</Text>}
+      <Text style={styles.textError}>{errorMessage}</Text>
     </View>
   );
 };
