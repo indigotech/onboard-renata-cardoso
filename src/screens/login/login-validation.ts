@@ -6,7 +6,8 @@ export const emailIsValid = (email: string) => {
   return emailIsValid.test(email);
 };
 
-export const passwordHasValidLength = (password: string) => password.length >= 7;
+export const passwordHasValidLength = (password: string) =>
+  password.length >= 7;
 
 export const passwordHasNumber = (password: string) => {
   const hasNumber = /[0-9]/;
