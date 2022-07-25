@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import {HomePage} from '../home/home-page';
-import {LOGIN_MUTATION} from './login-mutation';
+import {LOGIN_MUTATION} from '../../utils/requests';
 import {styles} from './login-page.styles';
 import {
   emailIsValid,
@@ -20,6 +19,7 @@ import {
   passwordHasValidLength,
 } from './login-validation';
 import {NavigationComponentProps} from 'react-native-navigation';
+import {UserPage} from '../users/user-page';
 
 export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
@@ -45,10 +45,12 @@ export const LoginPage = (props: NavigationComponentProps) => {
   const handleSubmit = async () => {
     loginValidation();
     try {
-      const result = await login({variables: {email, password}});
+      const result = await login({
+        variables: {email: email, password: password},
+      });
       await AsyncStorage.setItem('token', result.data.login.token);
       Navigation.push(props.componentId, {
-        component: HomePage,
+        component: UserPage,
       });
     } catch (error) {
       console.log(error);
