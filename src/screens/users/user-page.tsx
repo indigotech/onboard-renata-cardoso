@@ -1,6 +1,6 @@
 import {useQuery} from '@apollo/client';
-import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
 import {styleUser} from './user-page.styles';
 
@@ -20,9 +20,19 @@ const renderUser = ({item}: {item: User}) => {
 };
 
 const keyExtractor = (item: {id: string}) => item.id;
+const limit = 10;
 
 export const UserPage = () => {
-  const {data} = useQuery(GET_USER);
+  const [count, setCount] = useState(0);
+  const {data, refetch} = useQuery(GET_USER, {
+    variables: {offset: count},
+  });
+
+  const handleLoadMore = () => {
+    setCount(count + limit);
+    refetch({offset: count});
+  };
+
   return (
     <View>
       <FlatList
@@ -30,6 +40,9 @@ export const UserPage = () => {
         renderItem={renderUser}
         keyExtractor={keyExtractor}
       />
+      <TouchableOpacity style={styleUser.button} onPress={handleLoadMore}>
+        <Text style={styleUser.textButton}>Load More</Text>
+      </TouchableOpacity>
     </View>
   );
 };
