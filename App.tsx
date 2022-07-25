@@ -17,7 +17,7 @@ Navigation.registerComponent('Login', () => props => (
 
 Navigation.registerComponent('HomePage', () => HomePage);
 
-Navigation.events().registerAppLaunchedListener(async () => {
+Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({
     root: {
       stack: {
