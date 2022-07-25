@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
-import {LOGIN_MUTATION} from '../../requests';
+import {LOGIN_MUTATION} from '../../utils/requests';
 import {styles} from './login-page.styles';
 import {
   emailIsValid,
