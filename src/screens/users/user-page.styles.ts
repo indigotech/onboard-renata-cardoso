@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export const styles = StyleSheet.create({
+export const styleUser = StyleSheet.create({
   container: {
     padding: 8,
     borderWidth: 1,

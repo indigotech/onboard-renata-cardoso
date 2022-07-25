@@ -1,11 +1,11 @@
 import {
   ApolloClient,
-  ApolloLink,
   ApolloProvider,
   concat,
   HttpLink,
   InMemoryCache,
 } from '@apollo/client';
+import {setContext} from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {Navigation} from 'react-native-navigation';
@@ -17,15 +17,16 @@ const httpLink = new HttpLink({
   uri: 'https://tq-template-server-sample.herokuapp.com/graphql',
 });
 
-const auth = new ApolloLink((operation, forward) => {
-  const token = AsyncStorage.getItem('token');
-  operation.setContext({
+const auth = setContext(async (_, {headers}) => {
+  const token = await AsyncStorage.getItem('token');
+  return {
     headers: {
-      authorization: token ? `Bearer ${token}` : '',
+      ...headers,
+      authorization: token ? token : '',
     },
-  });
-  return forward(operation);
+  };
 });
+
 export const apolloClient = new ApolloClient({
   link: concat(auth, httpLink),
   cache: new InMemoryCache(),
