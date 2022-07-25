@@ -18,3 +18,11 @@ export const passwordHasLetter = (password: string) => {
   const hasLetter = /[a-zA-Z]/;
   return hasLetter.test(password);
 };
+
+export const cpfHasValidLength = (cpf: string) => cpf.length === 11;
+
+export const birthDateIsValid = (birthDate: string) => {
+  const birthDateIsValid =
+    /^(0[1-9]|1[012])[-/.](0[1-9]|[12][0-9]|3[01])[-/.](19|20)\\d\\d$/;
+  return birthDateIsValid.test(birthDate);
+};
