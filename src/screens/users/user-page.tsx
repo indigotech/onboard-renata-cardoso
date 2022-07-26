@@ -22,13 +22,40 @@ const renderUser = ({item}: {item: User}) => {
 const keyExtractor = (item: {id: string}) => item.id;
 
 export const UserPage = () => {
-  const {data} = useQuery(GET_USER);
+  const {data, fetchMore} = useQuery(GET_USER, {
+    variables: {
+      offset: 0,
+      limit: 10,
+    },
+  });
+
+  const handleLoadMore = () => {
+    if (data.users.pageInfo.hasNextPage) {
+      fetchMore({
+        variables: {
+          offset: data.users.nodes.length,
+        },
+        updateQuery: (previousResult = {}, {fetchMoreResult = {}}) => {
+          const result = fetchMoreResult?.users.nodes ?? [];
+          return {
+            ...previousResult,
+            users: {
+              ...previousResult.users,
+              nodes: [...previousResult.users.nodes, ...result],
+            },
+          };
+        },
+      });
+    }
+  };
+
   return (
     <View>
       <FlatList
         data={data?.users.nodes}
         renderItem={renderUser}
         keyExtractor={keyExtractor}
+        onEndReached={handleLoadMore}
       />
     </View>
   );
