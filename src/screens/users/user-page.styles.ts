@@ -12,8 +12,8 @@ export const styleUser = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    marginBottom: 60,
-    marginRight: 10,
+    marginBottom: 20,
+    marginRight: 20,
     right: 0,
     bottom: 0,
     backgroundColor: '#6550FF',

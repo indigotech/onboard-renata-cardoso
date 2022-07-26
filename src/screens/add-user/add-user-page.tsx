@@ -1,17 +1,22 @@
+import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
+import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
+import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
   isBirthDateValid,
   cpfHasValidLength,
   isEmpty,
   emailIsValid,
   isPhoneValid,
+  roleIsValid,
 } from '../login/login-validation';
+import {UserPage} from '../users/user-page';
 import {styleAddUser} from './add-user-page.styles';
 
-export const AddUserPage = () => {
+export const AddUserPage = (props: NavigationComponentProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [cpf, setCpf] = useState('');
@@ -19,6 +24,7 @@ export const AddUserPage = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [errorMessage, setErrorMessage] = useState(['', false]);
+  const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
 
   const userValidation = () => {
     if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
@@ -31,15 +37,33 @@ export const AddUserPage = () => {
       setErrorMessage(['CPF deve possuir 11 digitos', false]);
     } else if (!isBirthDateValid(birthDate)) {
       setErrorMessage(['Data de Aniversário inválida', false]);
+    } else if (!roleIsValid(role)) {
+      setErrorMessage(['Categoria inválida (Admin | User)', false]);
     } else {
       setErrorMessage(['', true]);
+      //true = valido
     }
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     userValidation();
     if (errorMessage[1] === true) {
-      console.log('Usuario adicionado com sucesso');
+      try {
+        await createUser({
+          variables: {
+            name: name,
+            phone: phone,
+            birthDate: birthDate,
+            email: email,
+            role: role,
+          },
+        });
+        Navigation.push(props.componentId, {
+          component: UserPage,
+        });
+      } catch (error: any) {
+        setErrorMessage(error);
+      }
     }
   };
 
@@ -56,7 +80,11 @@ export const AddUserPage = () => {
       />
       <InputComponent label={'Role'} value={role} onChangeText={setRole} />
 
-      <ButtonComponent text={'Add User'} onPress={handleAddUser} />
+      <ButtonComponent
+        text={'Adicionar Usuário'}
+        onPress={handleAddUser}
+        loading={loading}
+      />
       <Text style={styleAddUser.textError}>
         {errorMessage ? errorMessage[0] : ''}
       </Text>

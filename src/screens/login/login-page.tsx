@@ -1,6 +1,6 @@
 import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
-import {ActivityIndicator, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
 import {LOGIN_MUTATION} from '../../utils/requests';

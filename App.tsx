@@ -22,7 +22,11 @@ Navigation.registerComponent('UserPage', () => props => (
   </ApolloProvider>
 ));
 
-Navigation.registerComponent('AddUserPage', () => AddUserPage);
+Navigation.registerComponent('AddUserPage', () => props => (
+  <ApolloProvider client={apolloClient}>
+    <AddUserPage componentId={props.componentId} />
+  </ApolloProvider>
+));
 
 Navigation.registerComponent('HomePage', () => HomePage);
 

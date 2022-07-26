@@ -31,3 +31,9 @@ export const isPhoneValid = (phone: string) => {
   const phoneRegex = /(\(?\d{2}\)?\s)?(\d{4,5}\d{4})/g;
   return phoneRegex.test(phone);
 };
+
+export const roleIsValid = (role: string) => {
+  if (role.toLowerCase() === 'admin' || role.toLowerCase() === 'user') {
+    return true;
+  }
+};
