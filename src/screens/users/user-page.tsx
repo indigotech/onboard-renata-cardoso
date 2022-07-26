@@ -20,17 +20,31 @@ const renderUser = ({item}: {item: User}) => {
 };
 
 const keyExtractor = (item: {id: string}) => item.id;
-const limit = 10;
 
 export const UserPage = () => {
-  const [count, setCount] = useState(0);
-  const {data, refetch} = useQuery(GET_USER, {
-    variables: {offset: count},
+  const {data, fetchMore} = useQuery(GET_USER, {
+    variables: {
+      offset: 0,
+      limit: 10,
+    },
   });
 
   const handleLoadMore = () => {
-    setCount(count + limit);
-    refetch({offset: count});
+    fetchMore({
+      variables: {
+        offset: data.users.nodes.length,
+      },
+      updateQuery: (previousResult = {}, {fetchMoreResult = {}}) => {
+        const result = fetchMoreResult?.users.nodes ?? [];
+        return {
+          ...previousResult,
+          users: {
+            ...previousResult.users,
+            nodes: [...previousResult.users.nodes, ...result],
+          },
+        };
+      },
+    });
   };
 
   return (
@@ -39,10 +53,8 @@ export const UserPage = () => {
         data={data?.users.nodes}
         renderItem={renderUser}
         keyExtractor={keyExtractor}
+        onEndReached={handleLoadMore}
       />
-      <TouchableOpacity style={styleUser.button} onPress={handleLoadMore}>
-        <Text style={styleUser.textButton}>Load More</Text>
-      </TouchableOpacity>
     </View>
   );
 };
