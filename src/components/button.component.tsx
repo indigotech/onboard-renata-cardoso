@@ -12,9 +12,16 @@ type Props = TouchableOpacityProps & {
   loading?: boolean;
 };
 
-export const ButtonComponent = ({text, loading, ...rest}: Props) => {
+export const ButtonComponent = ({
+  text,
+  loading,
+  ...touchableOpacityProps
+}: Props) => {
   return (
-    <TouchableOpacity style={styles.button} {...rest}>
+    <TouchableOpacity
+      style={styles.button}
+      disabled={loading}
+      {...touchableOpacityProps}>
       {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
       <Text style={styles.textButton}>{text}</Text>
     </TouchableOpacity>
@@ -25,12 +32,12 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#6550FF',
     height: 52,
-    width: 340,
     borderRadius: 14,
     alignSelf: 'center',
     marginTop: 32,
     flexDirection: 'row',
     justifyContent: 'center',
+    paddingHorizontal: 30,
   },
   textButton: {
     color: '#FFF',

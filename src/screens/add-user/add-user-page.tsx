@@ -2,7 +2,13 @@ import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
-import {birthDateIsValid, cpfHasValidLength} from '../login/login-validation';
+import {
+  isBirthDateValid,
+  cpfHasValidLength,
+  isEmpty,
+  emailIsValid,
+  isPhoneValid,
+} from '../login/login-validation';
 import {styleAddUser} from './add-user-page.styles';
 
 export const AddUserPage = () => {
@@ -12,28 +18,27 @@ export const AddUserPage = () => {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(['', false]);
 
   const userValidation = () => {
-    if (
-      name === '' ||
-      email === '' ||
-      phone === '' ||
-      birthDate === '' ||
-      cpf === '' ||
-      role === ''
-    ) {
-      setErrorMessage('Campos não devem estar vazios');
-    } else if (!birthDateIsValid) {
-      setErrorMessage('Data de Aniversário inválida');
-    } else if (!cpfHasValidLength) {
-      setErrorMessage('CPF deve possuir 11 digitos');
+    if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
+      setErrorMessage(['Campos não devem estar vazios', false]);
+    } else if (!isPhoneValid(phone)) {
+      setErrorMessage(['Telefone inválido', false]);
+    } else if (!emailIsValid(email)) {
+      setErrorMessage(['Email inválido', false]);
+    } else if (!cpfHasValidLength(cpf)) {
+      setErrorMessage(['CPF deve possuir 11 digitos', false]);
+    } else if (!isBirthDateValid(birthDate)) {
+      setErrorMessage(['Data de Aniversário inválida', false]);
+    } else {
+      setErrorMessage(['', true]);
     }
   };
 
   const handleAddUser = () => {
     userValidation();
-    if (errorMessage.length === 0) {
+    if (errorMessage[1] === true) {
       console.log('Usuario adicionado com sucesso');
     }
   };
@@ -52,7 +57,9 @@ export const AddUserPage = () => {
       <InputComponent label={'Role'} value={role} onChangeText={setRole} />
 
       <ButtonComponent text={'Add User'} onPress={handleAddUser} />
-      <Text style={styleAddUser.textError}>{errorMessage}</Text>
+      <Text style={styleAddUser.textError}>
+        {errorMessage ? errorMessage[0] : ''}
+      </Text>
     </View>
   );
 };
