@@ -1,12 +1,6 @@
 import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
-import {
-  ActivityIndicator,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
 import {LOGIN_MUTATION} from '../../utils/requests';
@@ -20,6 +14,8 @@ import {
 } from './login-validation';
 import {NavigationComponentProps} from 'react-native-navigation';
 import {UserPage} from '../users/user-page';
+import {ButtonComponent} from '../../components/button.component';
+import {InputComponent} from '../../components/input.component';
 
 export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
@@ -62,23 +58,22 @@ export const LoginPage = (props: NavigationComponentProps) => {
       <Text style={styles.header}>Bem-vindo(a) à Taqtile!</Text>
 
       <View style={styles.wrapperInput}>
-        <Text style={styles.label}>E-mail</Text>
-        <TextInput onChangeText={setEmail} value={email} style={styles.input} />
-        <Text style={styles.label}>Senha</Text>
-        <TextInput
+        <InputComponent
+          label={'E-mail'}
+          onChangeText={setEmail}
+          value={email}
+        />
+        <InputComponent
+          label={'Senha'}
           onChangeText={setPassword}
           value={password}
-          style={styles.input}
         />
       </View>
-
-      <TouchableOpacity
-        style={styles.button}
+      <ButtonComponent
+        text={loading ? 'Loading' : 'Entrar'}
         onPress={handleSubmit}
-        disabled={loading}>
-        {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
-        <Text style={styles.textButton}>{loading ? 'Loading' : 'Entrar'}</Text>
-      </TouchableOpacity>
+        loading={loading}
+      />
       <Text style={styles.textError}>{errorMessage}</Text>
     </View>
   );

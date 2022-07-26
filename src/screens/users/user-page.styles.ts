@@ -10,21 +10,12 @@ export const styleUser = StyleSheet.create({
   text: {
     fontSize: 16,
   },
-  button: {
+  fab: {
+    position: 'absolute',
+    marginBottom: 60,
+    marginRight: 10,
+    right: 0,
+    bottom: 0,
     backgroundColor: '#6550FF',
-    height: 52,
-    width: 340,
-    borderRadius: 14,
-    alignSelf: 'center',
-    marginTop: 32,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  textButton: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 14,
   },
 });

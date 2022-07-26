@@ -3,6 +3,9 @@ import React from 'react';
 import {FlatList, Text, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
 import {styleUser} from './user-page.styles';
+import {FAB} from 'react-native-paper';
+import {Navigation, NavigationComponentProps} from 'react-native-navigation';
+import {AddUserPage} from '../add-user/add-user-page';
 
 interface User {
   id: string;
@@ -21,7 +24,7 @@ const renderUser = ({item}: {item: User}) => {
 
 const keyExtractor = (item: {id: string}) => item.id;
 
-export const UserPage = () => {
+export const UserPage = (props: NavigationComponentProps) => {
   const {data, fetchMore} = useQuery(GET_USER, {
     variables: {
       offset: 0,
@@ -49,6 +52,12 @@ export const UserPage = () => {
     }
   };
 
+  const handleAddUser = () => {
+    Navigation.push(props.componentId, {
+      component: AddUserPage,
+    });
+  };
+
   return (
     <View>
       <FlatList
@@ -57,6 +66,7 @@ export const UserPage = () => {
         keyExtractor={keyExtractor}
         onEndReached={handleLoadMore}
       />
+      <FAB icon="plus" style={styleUser.fab} onPress={handleAddUser} />
     </View>
   );
 };
