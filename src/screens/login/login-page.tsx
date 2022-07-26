@@ -72,7 +72,6 @@ export const LoginPage = (props: NavigationComponentProps) => {
       <ButtonComponent
         text={loading ? 'Loading' : 'Entrar'}
         onPress={handleSubmit}
-        disabled={loading}
         loading={loading}
       />
       <Text style={styles.textError}>{errorMessage}</Text>

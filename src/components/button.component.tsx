@@ -10,17 +10,19 @@ import {StyleSheet} from 'react-native';
 type Props = TouchableOpacityProps & {
   text: string;
   loading?: boolean;
+  disabled?: string;
 };
 
 export const ButtonComponent = ({
   text,
   loading,
+  disabled,
   ...touchableOpacityProps
 }: Props) => {
   return (
     <TouchableOpacity
       style={styles.button}
-      disabled={loading}
+      disabled={disabled || loading}
       {...touchableOpacityProps}>
       {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
       <Text style={styles.textButton}>{text}</Text>

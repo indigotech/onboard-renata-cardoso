@@ -1,6 +1,6 @@
 import {useQuery} from '@apollo/client';
 import React, {useState} from 'react';
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Text, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
 import {styleUser} from './user-page.styles';
 import {FAB} from 'react-native-paper';
