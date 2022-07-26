@@ -1,6 +1,6 @@
 import {useQuery} from '@apollo/client';
-import React, {useRef, useState} from 'react';
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {FlatList, Text, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
 import {styleUser} from './user-page.styles';
 
@@ -30,21 +30,23 @@ export const UserPage = () => {
   });
 
   const handleLoadMore = () => {
-    fetchMore({
-      variables: {
-        offset: data.users.nodes.length,
-      },
-      updateQuery: (previousResult = {}, {fetchMoreResult = {}}) => {
-        const result = fetchMoreResult?.users.nodes ?? [];
-        return {
-          ...previousResult,
-          users: {
-            ...previousResult.users,
-            nodes: [...previousResult.users.nodes, ...result],
-          },
-        };
-      },
-    });
+    if (data.users.pageInfo.hasNextPage) {
+      fetchMore({
+        variables: {
+          offset: data.users.nodes.length,
+        },
+        updateQuery: (previousResult = {}, {fetchMoreResult = {}}) => {
+          const result = fetchMoreResult?.users.nodes ?? [];
+          return {
+            ...previousResult,
+            users: {
+              ...previousResult.users,
+              nodes: [...previousResult.users.nodes, ...result],
+            },
+          };
+        },
+      });
+    }
   };
 
   return (
