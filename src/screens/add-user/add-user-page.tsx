@@ -41,7 +41,6 @@ export const AddUserPage = (props: NavigationComponentProps) => {
       setErrorMessage(['Categoria inválida (Admin | User)', false]);
     } else {
       setErrorMessage(['', true]);
-      //true = valido
     }
   };
 
@@ -62,7 +61,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           component: UserPage,
         });
       } catch (error: any) {
-        setErrorMessage(error);
+        setErrorMessage([error, false]);
       }
     }
   };
