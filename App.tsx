@@ -7,6 +7,7 @@ import {UserPage} from './src/screens/users/user-page';
 import {apolloClient} from './src/utils/client';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {AddUserPage} from './src/screens/add-user/add-user-page';
+import {UserDetailsPage} from './src/screens/user-details/user-details-page';
 
 Navigation.registerComponent('Login', () => props => (
   <ApolloProvider client={apolloClient}>
@@ -25,6 +26,12 @@ Navigation.registerComponent('UserPage', () => props => (
 Navigation.registerComponent('AddUserPage', () => props => (
   <ApolloProvider client={apolloClient}>
     <AddUserPage componentId={props.componentId} />
+  </ApolloProvider>
+));
+
+Navigation.registerComponent('UserDetailsPage', () => props => (
+  <ApolloProvider client={apolloClient}>
+    <UserDetailsPage id={props.id} />
   </ApolloProvider>
 ));
 
