@@ -62,13 +62,12 @@ export const UserPage = (props: NavigationComponentProps) => {
 
   const renderUser = ({item}: {item: User}) => {
     return (
-      <View style={styleUser.container}>
-        <Text style={styleUser.text}>Name: {item.name}</Text>
-        <Text style={styleUser.text}>Email: {item.email}</Text>
-        <TouchableOpacity onPress={() => handleUserDetails(item.id)}>
-          <Text> Perfil </Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => handleUserDetails(item.id)}>
+        <View style={styleUser.container}>
+          <Text style={styleUser.text}>Name: {item.name}</Text>
+          <Text style={styleUser.text}>Email: {item.email}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
