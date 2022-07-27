@@ -62,7 +62,6 @@ export const AddUserPage = (props: NavigationComponentProps) => {
         });
       } catch (error: any) {
         setErrorMessage([error, false]);
-        console.log(error);
       }
     }
   };
@@ -92,13 +91,14 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onPress={() => setRole('admin')}
         />
       </View>
-
       <ButtonComponent
         text={'Create User'}
         onPress={handleAddUser}
         loading={loading}
       />
-      <Text style={styleAddUser.textError}>erro</Text>
+      <Text style={styleAddUser.textError}>
+        {errorMessage ? errorMessage : ''}
+      </Text>
     </View>
   );
 };
