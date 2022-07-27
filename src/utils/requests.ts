@@ -24,24 +24,14 @@ export const GET_USER = gql`
 `;
 
 export const ADD_USER_MUTATION = gql`
-  mutation createUser(
-    $name: String!
-    $phone: String!
-    $birthDate: Date!
-    $email: String!
-    $role: UserRole!
-  ) {
-    createUser(
-      data: {
-        name: $name
-        phone: $phone
-        birthDate: $birthDate
-        email: $email
-        role: $role
-      }
-    ) {
+  mutation createUser($data: UserInputType!) {
+    createUser(data: $data) {
+      id
       name
       email
+      phone
+      birthDate
+      role
     }
   }
 `;
