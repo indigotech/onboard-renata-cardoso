@@ -2,6 +2,7 @@ import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
+import {RadioButton} from 'react-native-paper';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
 import {ADD_USER_MUTATION} from '../../utils/requests';
@@ -11,7 +12,6 @@ import {
   isEmpty,
   emailIsValid,
   isPhoneValid,
-  roleIsValid,
 } from '../login/login-validation';
 import {UserPage} from '../users/user-page';
 import {styleAddUser} from './add-user-page.styles';
@@ -22,7 +22,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const [cpf, setCpf] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('user');
   const [errorMessage, setErrorMessage] = useState(['', false]);
   const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
 
@@ -37,8 +37,6 @@ export const AddUserPage = (props: NavigationComponentProps) => {
       setErrorMessage(['CPF deve possuir 11 digitos', false]);
     } else if (!isBirthDateValid(birthDate)) {
       setErrorMessage(['Data de Aniversário inválida', false]);
-    } else if (!roleIsValid(role)) {
-      setErrorMessage(['Categoria inválida (Admin | User)', false]);
     } else {
       setErrorMessage(['', true]);
     }
@@ -50,11 +48,13 @@ export const AddUserPage = (props: NavigationComponentProps) => {
       try {
         await createUser({
           variables: {
-            name: name,
-            phone: phone,
-            birthDate: birthDate,
-            email: email,
-            role: role,
+            data: {
+              name: name,
+              phone: phone,
+              birthDate: birthDate,
+              email: email,
+              role: role,
+            },
           },
         });
         Navigation.push(props.componentId, {
@@ -77,15 +77,27 @@ export const AddUserPage = (props: NavigationComponentProps) => {
         value={birthDate}
         onChangeText={setBirthDate}
       />
-      <InputComponent label={'Role'} value={role} onChangeText={setRole} />
-
+      <View style={styleAddUser.radioButtons}>
+        <Text style={styleAddUser.textRadio}>User</Text>
+        <RadioButton
+          value="user"
+          status={role === 'user' ? 'checked' : 'unchecked'}
+          onPress={() => setRole('user')}
+        />
+        <Text style={styleAddUser.textRadio}>Admin</Text>
+        <RadioButton
+          value="admin"
+          status={role === 'admin' ? 'checked' : 'unchecked'}
+          onPress={() => setRole('admin')}
+        />
+      </View>
       <ButtonComponent
         text={'Adicionar Usuário'}
         onPress={handleAddUser}
         loading={loading}
       />
       <Text style={styleAddUser.textError}>
-        {errorMessage ? errorMessage[0] : ''}
+        {errorMessage ? errorMessage : ''}
       </Text>
     </View>
   );
