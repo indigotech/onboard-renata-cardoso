@@ -1,6 +1,6 @@
 import {useQuery} from '@apollo/client';
 import React from 'react';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, Text, TouchableOpacity, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
 import {styleUser} from './user-page.styles';
 import {FAB} from 'react-native-paper';
@@ -12,15 +12,6 @@ interface User {
   name: string;
   email: string;
 }
-
-const renderUser = ({item}: {item: User}) => {
-  return (
-    <View style={styleUser.container}>
-      <Text style={styleUser.text}>Name: {item.name}</Text>
-      <Text style={styleUser.text}>Email: {item.email}</Text>
-    </View>
-  );
-};
 
 const keyExtractor = (item: {id: string}) => item.id;
 
@@ -56,6 +47,28 @@ export const UserPage = (props: NavigationComponentProps) => {
     Navigation.push(props.componentId, {
       component: AddUserPage,
     });
+  };
+
+  const handleUserDetails = (id: string) => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'UserDetailsPage',
+        passProps: {
+          id: id,
+        },
+      },
+    });
+  };
+
+  const renderUser = ({item}: {item: User}) => {
+    return (
+      <TouchableOpacity onPress={() => handleUserDetails(item.id)}>
+        <View style={styleUser.container}>
+          <Text style={styleUser.text}>Name: {item.name}</Text>
+          <Text style={styleUser.text}>Email: {item.email}</Text>
+        </View>
+      </TouchableOpacity>
+    );
   };
 
   return (

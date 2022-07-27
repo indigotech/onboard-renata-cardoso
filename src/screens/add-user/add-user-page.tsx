@@ -92,7 +92,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
         />
       </View>
       <ButtonComponent
-        text={'Adicionar Usuário'}
+        text={'Create User'}
         onPress={handleAddUser}
         loading={loading}
       />
