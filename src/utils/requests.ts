@@ -22,3 +22,16 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const ADD_USER_MUTATION = gql`
+  mutation createUser($data: UserInputType!) {
+    createUser(data: $data) {
+      id
+      name
+      email
+      phone
+      birthDate
+      role
+    }
+  }
+`;

@@ -1,7 +1,11 @@
+import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
 import {Text, View} from 'react-native';
+import {Navigation, NavigationComponentProps} from 'react-native-navigation';
+import {RadioButton} from 'react-native-paper';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
+import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
   isBirthDateValid,
   cpfHasValidLength,
@@ -9,16 +13,18 @@ import {
   emailIsValid,
   isPhoneValid,
 } from '../login/login-validation';
+import {UserPage} from '../users/user-page';
 import {styleAddUser} from './add-user-page.styles';
 
-export const AddUserPage = () => {
+export const AddUserPage = (props: NavigationComponentProps) => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [cpf, setCpf] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState('user');
   const [errorMessage, setErrorMessage] = useState(['', false]);
+  const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
 
   const userValidation = () => {
     if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
@@ -36,10 +42,27 @@ export const AddUserPage = () => {
     }
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = async () => {
     userValidation();
     if (errorMessage[1] === true) {
-      console.log('Usuario adicionado com sucesso');
+      try {
+        await createUser({
+          variables: {
+            data: {
+              name: name,
+              phone: phone,
+              birthDate: birthDate,
+              email: email,
+              role: role,
+            },
+          },
+        });
+        Navigation.push(props.componentId, {
+          component: UserPage,
+        });
+      } catch (error: any) {
+        setErrorMessage([error, false]);
+      }
     }
   };
 
@@ -54,11 +77,27 @@ export const AddUserPage = () => {
         value={birthDate}
         onChangeText={setBirthDate}
       />
-      <InputComponent label={'Role'} value={role} onChangeText={setRole} />
-
-      <ButtonComponent text={'Add User'} onPress={handleAddUser} />
+      <View style={styleAddUser.radioButtons}>
+        <Text style={styleAddUser.textRadio}>User</Text>
+        <RadioButton
+          value="user"
+          status={role === 'user' ? 'checked' : 'unchecked'}
+          onPress={() => setRole('user')}
+        />
+        <Text style={styleAddUser.textRadio}>Admin</Text>
+        <RadioButton
+          value="admin"
+          status={role === 'admin' ? 'checked' : 'unchecked'}
+          onPress={() => setRole('admin')}
+        />
+      </View>
+      <ButtonComponent
+        text={'Adicionar Usuário'}
+        onPress={handleAddUser}
+        loading={loading}
+      />
       <Text style={styleAddUser.textError}>
-        {errorMessage ? errorMessage[0] : ''}
+        {errorMessage ? errorMessage : ''}
       </Text>
     </View>
   );
