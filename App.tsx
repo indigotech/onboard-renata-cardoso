@@ -1,7 +1,6 @@
 import {ApolloProvider} from '@apollo/client';
 import React from 'react';
 import {Navigation} from 'react-native-navigation';
-import {HomePage} from './src/screens/home/home-page';
 import {LoginPage} from './src/screens/login/login-page';
 import {UserPage} from './src/screens/users/user-page';
 import {apolloClient} from './src/utils/client';
@@ -34,8 +33,6 @@ Navigation.registerComponent('UserDetailsPage', () => props => (
     <UserDetailsPage {...props} />
   </ApolloProvider>
 ));
-
-Navigation.registerComponent('HomePage', () => HomePage);
 
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({

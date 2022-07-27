@@ -1,9 +1,10 @@
 import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {RadioButton} from 'react-native-paper';
 import {ButtonComponent} from '../../components/button.component';
+import {HeaderComponent} from '../../components/header.component';
 import {InputComponent} from '../../components/input.component';
 import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
@@ -13,8 +14,12 @@ import {
   emailIsValid,
   isPhoneValid,
 } from '../login/login-validation';
-import {UserPage} from '../users/user-page';
-import {styleAddUser} from './add-user-page.styles';
+import {
+  Container,
+  WrapperRadioButtons,
+  TextRadioButtons,
+  TextError,
+} from '../../styles/screens.styles';
 
 export const AddUserPage = (props: NavigationComponentProps) => {
   const [name, setName] = useState('');
@@ -23,8 +28,9 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
-  const [errorMessage, setErrorMessage] = useState(['', false]);
-  const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
+  const [errorMessage, setErrorMessage] = useState(['', true]);
+  const [createUser, {loading, error}] = useMutation(ADD_USER_MUTATION);
+  const [validateInput, setValidateInput] = useState(true);
 
   const userValidation = () => {
     if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
@@ -45,6 +51,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const handleAddUser = async () => {
     userValidation();
     if (errorMessage[1] === true) {
+      setValidateInput(true);
       try {
         await createUser({
           variables: {
@@ -57,49 +64,76 @@ export const AddUserPage = (props: NavigationComponentProps) => {
             },
           },
         });
-        Navigation.push(props.componentId, {
-          component: UserPage,
-        });
+        Navigation.pop(props.componentId);
       } catch (error: any) {
         setErrorMessage([error, false]);
       }
+    } else {
+      setValidateInput(false);
     }
   };
 
   return (
-    <View style={styleAddUser.container}>
-      <InputComponent label={'Name'} value={name} onChangeText={setName} />
-      <InputComponent label={'Email'} value={email} onChangeText={setEmail} />
-      <InputComponent label={'CPF'} value={cpf} onChangeText={setCpf} />
-      <InputComponent label={'Phone'} value={phone} onChangeText={setPhone} />
-      <InputComponent
-        label={'Birth Date'}
-        value={birthDate}
-        onChangeText={setBirthDate}
-      />
-      <View style={styleAddUser.radioButtons}>
-        <Text style={styleAddUser.textRadio}>User</Text>
-        <RadioButton
-          value="user"
-          status={role === 'user' ? 'checked' : 'unchecked'}
-          onPress={() => setRole('user')}
+    <ScrollView>
+      <Container>
+        <HeaderComponent title={'Create User'} />
+        <InputComponent
+          label={'Nome'}
+          value={name}
+          onChangeText={setName}
+          isValid={validateInput}
+          placeholder={'Your name'}
         />
-        <Text style={styleAddUser.textRadio}>Admin</Text>
-        <RadioButton
-          value="admin"
-          status={role === 'admin' ? 'checked' : 'unchecked'}
-          onPress={() => setRole('admin')}
+        <InputComponent
+          label={'Email'}
+          value={email}
+          onChangeText={setEmail}
+          isValid={validateInput}
+          placeholder={'user@email.com'}
         />
-      </View>
-      <ButtonComponent
-        text={'Create User'}
-        onPress={handleAddUser}
-        loading={loading}
-      />
-      <Text style={styleAddUser.textError}>
-        {errorMessage ? errorMessage : ''}
-      </Text>
-    </View>
+        <InputComponent
+          label={'CPF'}
+          value={cpf}
+          onChangeText={setCpf}
+          isValid={validateInput}
+          placeholder={'00000000000'}
+        />
+        <InputComponent
+          label={'Phone'}
+          value={phone}
+          onChangeText={setPhone}
+          isValid={validateInput}
+          placeholder={'DD000000000'}
+        />
+        <InputComponent
+          label={'Birth Date'}
+          value={birthDate}
+          onChangeText={setBirthDate}
+          isValid={validateInput}
+          placeholder={'YYYY-MM-DD'}
+        />
+        <WrapperRadioButtons>
+          <TextRadioButtons>User</TextRadioButtons>
+          <RadioButton
+            value="user"
+            status={role === 'user' ? 'checked' : 'unchecked'}
+            onPress={() => setRole('user')}
+          />
+          <TextRadioButtons>Admin</TextRadioButtons>
+          <RadioButton
+            value="admin"
+            status={role === 'admin' ? 'checked' : 'unchecked'}
+            onPress={() => setRole('admin')}
+          />
+        </WrapperRadioButtons>
+        <ButtonComponent
+          text={'Create User'}
+          onPress={handleAddUser}
+          loading={loading}
+        />
+        <TextError>{error && error.toString()}</TextError>
+      </Container>
+    </ScrollView>
   );
 };
 

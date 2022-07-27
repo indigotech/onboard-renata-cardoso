@@ -1,35 +1,43 @@
 import React from 'react';
-import {Text, View, TextInput, TextInputProps} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {View, TextInputProps} from 'react-native';
+import styled from 'styled-components/native';
 
 type Props = TextInputProps & {
   label: string;
+  isValid: boolean;
 };
 
-export const InputComponent = ({label, ...rest}: Props) => {
+export const InputComponent = ({label, isValid, ...TextInputProps}: Props) => {
   return (
     <View>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} {...rest} />
+      <LabelStyled isValid={isValid}>{label}</LabelStyled>
+      <InputStyled isValid={isValid} {...TextInputProps} />
+      <CaptionStyled>
+        {!isValid && 'Dados não foram inseridos corretamente'}
+      </CaptionStyled>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 18,
-    color: '#000',
-    marginTop: 24,
-    marginHorizontal: 20,
-  },
-  input: {
-    width: 340,
-    height: 50,
-    borderRadius: 16,
-    fontSize: 13,
-    marginTop: 4,
-    borderWidth: 2,
-    borderColor: '#cecece',
-    marginHorizontal: 20,
-  },
-});
+const InputStyled = styled.TextInput<Props>`
+  border: 1px solid;
+  border-color: ${props => (props.isValid ? '#777777' : '#FF0000')}
+  width: 320px;
+  border-radius: 14px;
+`;
+
+const LabelStyled = styled.Text<Props>`
+  color: ${props => (props.isValid ? '#777777' : '#FF0000')};
+  font-size: 12px;
+  font-weight: normal;
+  margin-bottom: 12px;
+  margin-top: 4px;
+`;
+
+const CaptionStyled = styled.Text`
+  color: #ff0000;
+  font-size: 12px;
+  font-weight: normal;
+  text-align: center;
+  margin-top: 8px;
+`;

@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  ActivityIndicator,
-  Text,
-  TouchableOpacity,
-  TouchableOpacityProps,
-} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {ActivityIndicator, TouchableOpacityProps} from 'react-native';
+import styled from 'styled-components/native';
 
 type Props = TouchableOpacityProps & {
   text: string;
@@ -20,32 +15,29 @@ export const ButtonComponent = ({
   ...touchableOpacityProps
 }: Props) => {
   return (
-    <TouchableOpacity
-      style={styles.button}
-      disabled={disabled || loading}
-      {...touchableOpacityProps}>
+    <ButtonStyled disabled={disabled || loading} {...touchableOpacityProps}>
       {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
-      <Text style={styles.textButton}>{text}</Text>
-    </TouchableOpacity>
+      <TextStyled>{text}</TextStyled>
+    </ButtonStyled>
   );
 };
 
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#6550FF',
-    height: 52,
-    borderRadius: 14,
-    alignSelf: 'center',
-    marginTop: 32,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingHorizontal: 30,
-  },
-  textButton: {
-    color: '#FFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 14,
-  },
-});
+const ButtonStyled = styled.TouchableOpacity`
+  background-color: #6550ff;
+  height: 44px;
+  border-radius: 14px;
+  align-self: center;
+  margin-top: 32px;
+  flex-direction: row;
+  justify-content: center;
+  padding-left: 60px;
+  padding-right: 60px;
+`;
+
+const TextStyled = styled.Text`
+  color: #fff;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  margin-top: 10px;
+`;

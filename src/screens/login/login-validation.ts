@@ -1,7 +1,7 @@
 export const isEmpty = (value: string) => !value;
 
 export const emailIsValid = (email: string) => {
-  const emailIsValid = /^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/;
+  const emailIsValid = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com+\.br$/;
 
   return emailIsValid.test(email);
 };
