@@ -4,22 +4,23 @@ import {ScrollView} from 'react-native';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {RadioButton} from 'react-native-paper';
 import {ButtonComponent} from '../../components/button.component';
-import {HeaderComponent} from '../../components/header.component';
 import {InputComponent} from '../../components/input.component';
 import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
   isBirthDateValid,
   cpfHasValidLength,
   isEmpty,
-  emailIsValid,
+  isEmailValid,
   isPhoneValid,
 } from '../login/login-validation';
 import {
+  H1,
   Container,
-  WrapperRadioButtons,
-  TextRadioButtons,
+  AddUserTextRadioButtons,
+  AddUserRadioButtonsWrapper,
   TextError,
 } from '../../styles/screens.styles';
+import {isGraphQLError} from '../login/login-page';
 
 export const AddUserPage = (props: NavigationComponentProps) => {
   const [name, setName] = useState('');
@@ -28,30 +29,33 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
-  const [errorMessage, setErrorMessage] = useState(['', true]);
-  const [createUser, {loading, error}] = useMutation(ADD_USER_MUTATION);
-  const [validateInput, setValidateInput] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
+  const [isValidInput, setIsValidInput] = useState(true);
 
   const userValidation = () => {
     if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
-      setErrorMessage(['Campos não devem estar vazios', false]);
+      return 'Campos não devem estar vazios';
     } else if (!isPhoneValid(phone)) {
-      setErrorMessage(['Telefone inválido', false]);
-    } else if (!emailIsValid(email)) {
-      setErrorMessage(['Email inválido', false]);
+      return 'Telefone inválido';
+    } else if (!isEmailValid(email)) {
+      return 'Email inválido';
     } else if (!cpfHasValidLength(cpf)) {
-      setErrorMessage(['CPF deve possuir 11 digitos', false]);
+      return 'CPF deve possuir 11 digitos';
     } else if (!isBirthDateValid(birthDate)) {
-      setErrorMessage(['Data de Aniversário inválida', false]);
+      return 'Data de Aniversário inválida';
     } else {
-      setErrorMessage(['', true]);
+      return null;
     }
   };
 
   const handleAddUser = async () => {
-    userValidation();
-    if (errorMessage[1] === true) {
-      setValidateInput(true);
+    const errorAddUser = userValidation();
+    if (errorAddUser) {
+      setErrorMessage(errorAddUser);
+      setIsValidInput(false);
+    } else {
+      setIsValidInput(true);
       try {
         await createUser({
           variables: {
@@ -65,73 +69,75 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           },
         });
         Navigation.pop(props.componentId);
-      } catch (error: any) {
-        setErrorMessage([error, false]);
+      } catch (error: unknown) {
+        if (isGraphQLError(error)) {
+          setErrorMessage(error.graphQLErrors[0].message);
+        } else {
+          setErrorMessage('Algo deu errado');
+        }
       }
-    } else {
-      setValidateInput(false);
     }
   };
 
   return (
     <ScrollView>
       <Container>
-        <HeaderComponent title={'Create User'} />
+        <H1>Create User</H1>
         <InputComponent
-          label={'Nome'}
+          label={'Name'}
           value={name}
           onChangeText={setName}
-          isValid={validateInput}
+          isValid={isValidInput}
           placeholder={'Your name'}
         />
         <InputComponent
           label={'Email'}
           value={email}
           onChangeText={setEmail}
-          isValid={validateInput}
+          isValid={isValidInput}
           placeholder={'user@email.com'}
         />
         <InputComponent
           label={'CPF'}
           value={cpf}
           onChangeText={setCpf}
-          isValid={validateInput}
+          isValid={isValidInput}
           placeholder={'00000000000'}
         />
         <InputComponent
           label={'Phone'}
           value={phone}
           onChangeText={setPhone}
-          isValid={validateInput}
+          isValid={isValidInput}
           placeholder={'DD000000000'}
         />
         <InputComponent
           label={'Birth Date'}
           value={birthDate}
           onChangeText={setBirthDate}
-          isValid={validateInput}
+          isValid={isValidInput}
           placeholder={'YYYY-MM-DD'}
         />
-        <WrapperRadioButtons>
-          <TextRadioButtons>User</TextRadioButtons>
+        <AddUserRadioButtonsWrapper>
+          <AddUserTextRadioButtons>User</AddUserTextRadioButtons>
           <RadioButton
             value="user"
             status={role === 'user' ? 'checked' : 'unchecked'}
             onPress={() => setRole('user')}
           />
-          <TextRadioButtons>Admin</TextRadioButtons>
+          <AddUserTextRadioButtons>Admin</AddUserTextRadioButtons>
           <RadioButton
             value="admin"
             status={role === 'admin' ? 'checked' : 'unchecked'}
             onPress={() => setRole('admin')}
           />
-        </WrapperRadioButtons>
+        </AddUserRadioButtonsWrapper>
         <ButtonComponent
           text={'Create User'}
           onPress={handleAddUser}
           loading={loading}
         />
-        <TextError>{error && error.toString()}</TextError>
+        {errorMessage && <TextError>{errorMessage}</TextError>}
       </Container>
     </ScrollView>
   );

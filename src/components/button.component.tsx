@@ -1,8 +1,8 @@
 import React from 'react';
 import {ActivityIndicator, TouchableOpacityProps} from 'react-native';
-import styled from 'styled-components/native';
+import {ButtonStyled, TextStyled} from './button.component.style';
 
-type Props = TouchableOpacityProps & {
+type ButtonComponentProps = TouchableOpacityProps & {
   text: string;
   loading?: boolean;
   disabled?: string;
@@ -13,7 +13,7 @@ export const ButtonComponent = ({
   loading,
   disabled,
   ...touchableOpacityProps
-}: Props) => {
+}: ButtonComponentProps) => {
   return (
     <ButtonStyled disabled={disabled || loading} {...touchableOpacityProps}>
       {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
@@ -21,23 +21,3 @@ export const ButtonComponent = ({
     </ButtonStyled>
   );
 };
-
-const ButtonStyled = styled.TouchableOpacity`
-  background-color: #6550ff;
-  height: 44px;
-  border-radius: 14px;
-  align-self: center;
-  margin-top: 32px;
-  flex-direction: row;
-  justify-content: center;
-  padding-left: 60px;
-  padding-right: 60px;
-`;
-
-const TextStyled = styled.Text`
-  color: #fff;
-  font-size: 16px;
-  font-weight: normal;
-  text-align: center;
-  margin-top: 10px;
-`;

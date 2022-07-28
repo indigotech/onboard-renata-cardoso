@@ -1,12 +1,20 @@
 import styled from 'styled-components/native';
 
-// ADD USER PAGE
-export const WrapperRadioButtons = styled.View`
+export const H1 = styled.Text`
+  color: #000000;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  text-align: center;
+`;
+
+export const AddUserRadioButtonsWrapper = styled.View`
   flex-direction: row;
   margin-top: 10px;
 `;
 
-export const TextRadioButtons = styled.Text`
+export const AddUserTextRadioButtons = styled.Text`
   font-size: 14px;
   color: #000;
   margin-top: 4px;
@@ -14,41 +22,32 @@ export const TextRadioButtons = styled.Text`
   margin-right: 20px;
 `;
 
-// LOGIN PAGE
-export const WrapperInput = styled.View`
+export const LoginInputWrapper = styled.View`
   margin-top: 32px;
 `;
 
-// USER LIST PAGE
-export const ContainerList = styled.View`
+export const UserListContainer = styled.View`
   padding: 8px;
   margin: 2px;
   border: 1px solid black;
 `;
 
-export const TextUser = styled.Text`
+export const UserListText = styled.Text`
   font-size: 16px;
 `;
 
-export const WrapperContent = styled.View`
-  flex-direction: row;
-`;
-
-// USER DETAILS PAGE
-export const Content = styled.View`
+export const UserDetailsInfoWrapper = styled.View`
   padding: 8px;
   margin-top: 8px;
 `;
 
-export const TextContent = styled.Text`
+export const UserDetailsInfoText = styled.Text`
   color: #000000;
   font-size: 16px
   background-color: #e9e9e9;
   padding: 8px 12px 8px 12px;
   margin-top: 2px;
 `;
-
-////
 
 export const TextError = styled.Text`
   color: #FF0000;

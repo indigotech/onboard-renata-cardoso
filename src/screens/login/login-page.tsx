@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
 import {LOGIN_MUTATION} from '../../utils/requests';
 import {
-  emailIsValid,
+  isEmailValid,
   isEmpty,
   passwordHasLetter,
   passwordHasNumber,
@@ -14,37 +14,54 @@ import {NavigationComponentProps} from 'react-native-navigation';
 import {UserPage} from '../users/user-page';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
-import {HeaderComponent} from '../../components/header.component';
-import {Container, WrapperInput, TextError} from '../../styles/screens.styles';
+import {
+  H1,
+  Container,
+  LoginInputWrapper,
+  TextError,
+} from '../../styles/screens.styles';
+
+interface GraphQLError {
+  graphQLErrors: Array<{
+    message: string;
+  }>;
+}
+
+export function isGraphQLError(error: unknown): error is GraphQLError {
+  return Array.isArray((error as any)?.graphQLErrors);
+}
 
 export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(['', true]);
-  const [validateInput, setValidateInput] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isValidInput, setIsValidInput] = useState(true);
 
-  const [login, {loading, error}] = useMutation(LOGIN_MUTATION);
+  const [login, {loading}] = useMutation(LOGIN_MUTATION);
 
   const loginValidation = () => {
     if (isEmpty(email) || isEmpty(password)) {
-      setErrorMessage(['Campos não devem estar vazios', false]);
-    } else if (!emailIsValid(email)) {
-      setErrorMessage(['Email inválido', false]);
+      return 'Campos não devem estar vazios';
+    } else if (!isEmailValid(email)) {
+      return 'Email inválido';
     } else if (!passwordHasValidLength(password)) {
-      setErrorMessage(['Senha deve ter pelo menos 7 dígitos', false]);
+      return 'Senha deve ter pelo menos 7 dígitos';
     } else if (!passwordHasNumber(password)) {
-      setErrorMessage(['Senha deve conter pelo menos um número', false]);
+      return 'Senha deve conter pelo menos um número';
     } else if (!passwordHasLetter(password)) {
-      setErrorMessage(['Senha deve possuir pelo menos uma letra', false]);
+      return 'Senha deve possuir pelo menos uma letra';
     } else {
-      setErrorMessage(['', true]);
+      return null;
     }
   };
 
   const handleSubmit = async () => {
-    loginValidation();
-    if (errorMessage[1] === true) {
-      setValidateInput(true);
+    const errorLogin = loginValidation();
+    if (errorLogin) {
+      setErrorMessage(errorLogin);
+      setIsValidInput(false);
+    } else {
+      setIsValidInput(true);
       try {
         const result = await login({
           variables: {email: email, password: password},
@@ -53,39 +70,41 @@ export const LoginPage = (props: NavigationComponentProps) => {
         Navigation.push(props.componentId, {
           component: UserPage,
         });
-      } catch (error) {
-        console.log(error);
+      } catch (error: unknown) {
+        if (isGraphQLError(error)) {
+          setErrorMessage(error.graphQLErrors[0].message);
+        } else {
+          setErrorMessage('Algo deu errado');
+        }
       }
-    } else {
-      setValidateInput(false);
     }
   };
 
   return (
     <Container>
-      <HeaderComponent title={'Bem-vindo(a) à Taqtile!'} />
+      <H1>Bem-vindo(a) à Taqtile!</H1>
 
-      <WrapperInput>
+      <LoginInputWrapper>
         <InputComponent
           label={'E-mail'}
           onChangeText={setEmail}
           value={email}
-          isValid={validateInput}
+          isValid={isValidInput}
         />
         <InputComponent
           label={'Senha'}
           onChangeText={setPassword}
           value={password}
           secureTextEntry={true}
-          isValid={validateInput}
+          isValid={isValidInput}
         />
-      </WrapperInput>
+      </LoginInputWrapper>
       <ButtonComponent
         text={loading ? 'Loading' : 'Entrar'}
         onPress={handleSubmit}
         loading={loading}
       />
-      <TextError>{error && error.toString()}</TextError>
+      {errorMessage && <TextError>{errorMessage}</TextError>}
     </Container>
   );
 };

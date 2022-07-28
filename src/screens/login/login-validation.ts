@@ -1,9 +1,9 @@
 export const isEmpty = (value: string) => !value;
 
-export const emailIsValid = (email: string) => {
-  const emailIsValid = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com+\.br$/;
+export const isEmailValid = (email: string) => {
+  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com+\.br$/;
 
-  return emailIsValid.test(email);
+  return emailRegex.test(email);
 };
 
 export const passwordHasValidLength = (password: string) =>
