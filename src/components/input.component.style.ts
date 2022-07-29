@@ -6,6 +6,7 @@ export const InputStyled = styled.TextInput<InputComponentProps>`
   border-color: ${props => (props.isValid ? '#777777' : '#FF0000')}
   width: 320px;
   border-radius: 14px;
+  height: 50px;
 `;
 
 export const LabelStyled = styled.Text<InputComponentProps>`

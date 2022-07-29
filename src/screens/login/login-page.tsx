@@ -81,7 +81,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
   };
 
   return (
-    <Container>
+    <Container style={{marginTop: 32}}>
       <H1>Bem-vindo(a) à Taqtile!</H1>
 
       <LoginInputWrapper>

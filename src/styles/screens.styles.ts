@@ -29,11 +29,23 @@ export const LoginInputWrapper = styled.View`
 export const UserListContainer = styled.View`
   padding: 8px;
   margin: 2px;
-  border: 1px solid black;
+  border: 1px solid #c4c4c4;
+  background-color: #fff;
 `;
 
 export const UserListText = styled.Text`
   font-size: 16px;
+`;
+
+export const UserListProfileButton = styled.TouchableOpacity`
+  background-color: #fff;
+  width: 50px;
+  align-self: flex-end;
+`;
+
+export const UserListProfileText = styled.Text`
+  color: #6550ff;
+  text-align: center;
 `;
 
 export const UserDetailsInfoWrapper = styled.View`

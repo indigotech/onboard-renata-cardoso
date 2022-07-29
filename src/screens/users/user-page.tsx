@@ -1,8 +1,13 @@
 import {useQuery} from '@apollo/client';
 import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
-import {UserListContainer, UserListText} from '../../styles/screens.styles';
+import {
+  UserListContainer,
+  UserListText,
+  UserListProfileButton,
+  UserListProfileText,
+} from '../../styles/screens.styles';
 import {FAB} from 'react-native-paper';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {AddUserPage} from '../add-user/add-user-page';
@@ -65,9 +70,9 @@ export const UserPage = (props: NavigationComponentProps) => {
       <UserListContainer>
         <UserListText>Name: {item.name}</UserListText>
         <UserListText>E-mail: {item.email}</UserListText>
-        <TouchableOpacity onPress={() => handleUserDetails(item.id)}>
-          <Text>Profile</Text>
-        </TouchableOpacity>
+        <UserListProfileButton onPress={() => handleUserDetails(item.id)}>
+          <UserListProfileText>Profile</UserListProfileText>
+        </UserListProfileButton>
       </UserListContainer>
     );
   };
