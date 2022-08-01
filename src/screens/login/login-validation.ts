@@ -1,9 +1,7 @@
 export const isEmpty = (value: string) => !value;
 
 export const isEmailValid = (email: string) => {
-  const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com+\.br$/;
-
-  return emailRegex.test(email);
+  return email.match(`.*@.*\\.com.*`);
 };
 
 export const passwordHasValidLength = (password: string) =>
@@ -20,6 +18,11 @@ export const passwordHasLetter = (password: string) => {
 };
 
 export const cpfHasValidLength = (cpf: string) => cpf.length === 11;
+
+export const isCpfValid = (cpf: string) => {
+  const hasLetter = /[a-zA-Z]/;
+  return !hasLetter.test(cpf);
+};
 
 export const isBirthDateValid = (birthDate: string) => {
   const birthDateRegex =

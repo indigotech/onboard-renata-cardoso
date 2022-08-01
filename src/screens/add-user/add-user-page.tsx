@@ -12,6 +12,7 @@ import {
   isEmpty,
   isEmailValid,
   isPhoneValid,
+  isCpfValid,
 } from '../login/login-validation';
 import {
   H1,
@@ -42,6 +43,8 @@ export const AddUserPage = (props: NavigationComponentProps) => {
       return 'Email inválido';
     } else if (!cpfHasValidLength(cpf)) {
       return 'CPF deve possuir 11 digitos';
+    } else if (!isCpfValid(cpf)) {
+      return 'CPF deve possuir apenas números';
     } else if (!isBirthDateValid(birthDate)) {
       return 'Data de Aniversário inválida';
     } else {
