@@ -12,7 +12,7 @@ export const ButtonStyled = styled.TouchableOpacity`
   padding-right: 60px;
 `;
 
-export const TextStyled = styled.Text`
+export const ButtonTextStyled = styled.Text`
   color: #fff;
   font-size: 16px;
   font-weight: normal;

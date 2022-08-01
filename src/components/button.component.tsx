@@ -1,6 +1,6 @@
 import React from 'react';
 import {ActivityIndicator, TouchableOpacityProps} from 'react-native';
-import {ButtonStyled, TextStyled} from './button.component.style';
+import {ButtonStyled, ButtonTextStyled} from './button.component.style';
 
 type ButtonComponentProps = TouchableOpacityProps & {
   text: string;
@@ -17,7 +17,7 @@ export const ButtonComponent = ({
   return (
     <ButtonStyled disabled={disabled || loading} {...touchableOpacityProps}>
       {loading && <ActivityIndicator color="#FFFFFF" size="large" />}
-      <TextStyled>{text}</TextStyled>
+      <ButtonTextStyled>{text}</ButtonTextStyled>
     </ButtonStyled>
   );
 };

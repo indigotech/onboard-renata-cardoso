@@ -3,13 +3,7 @@ import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Navigation} from 'react-native-navigation';
 import {LOGIN_MUTATION} from '../../utils/requests';
-import {
-  isEmailValid,
-  isEmpty,
-  passwordHasLetter,
-  passwordHasNumber,
-  passwordHasValidLength,
-} from './login-validation';
+import {emailValidation, passwordValidation} from '../../utils/validations';
 import {NavigationComponentProps} from 'react-native-navigation';
 import {UserPage} from '../users/user-page';
 import {ButtonComponent} from '../../components/button.component';
@@ -27,41 +21,41 @@ interface GraphQLError {
   }>;
 }
 
-export function isGraphQLError(error: unknown): error is GraphQLError {
-  return Array.isArray((error as any)?.graphQLErrors);
+export function isGraphQLError(error: any): error is GraphQLError {
+  return Array.isArray(error?.graphQLErrors);
 }
 
 export const LoginPage = (props: NavigationComponentProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isValidInput, setIsValidInput] = useState(true);
+
+  const [errorEmailMessage, setErrorEmailMessage] = useState<string | null>(
+    null,
+  );
+  const [errorPasswordMessage, setErrorPasswordMessage] = useState<
+    string | null
+  >(null);
+
+  const [isEmailInputValid, setIsEmailInputValid] = useState(true);
+  const [isPasswordInputValid, setIsPasswordInputValid] = useState(true);
 
   const [login, {loading}] = useMutation(LOGIN_MUTATION);
 
-  const loginValidation = () => {
-    if (isEmpty(email) || isEmpty(password)) {
-      return 'Campos não devem estar vazios';
-    } else if (!isEmailValid(email)) {
-      return 'Email inválido';
-    } else if (!passwordHasValidLength(password)) {
-      return 'Senha deve ter pelo menos 7 dígitos';
-    } else if (!passwordHasNumber(password)) {
-      return 'Senha deve conter pelo menos um número';
-    } else if (!passwordHasLetter(password)) {
-      return 'Senha deve possuir pelo menos uma letra';
-    } else {
-      return null;
-    }
-  };
-
   const handleSubmit = async () => {
-    const errorLogin = loginValidation();
-    if (errorLogin) {
-      setErrorMessage(errorLogin);
-      setIsValidInput(false);
-    } else {
-      setIsValidInput(true);
+    const errorEmail = emailValidation(email);
+    const errorPassword = passwordValidation(password);
+
+    errorEmail
+      ? (setIsEmailInputValid(false), setErrorEmailMessage(errorEmail))
+      : (setIsEmailInputValid(true), setErrorEmailMessage(null));
+
+    errorPassword
+      ? (setIsPasswordInputValid(false), setErrorPasswordMessage(errorPassword))
+      : (setIsPasswordInputValid(true), setErrorPasswordMessage(null));
+
+    if (!errorEmail && !errorPassword) {
+      setErrorMessage(null);
       try {
         const result = await login({
           variables: {email: email, password: password},
@@ -89,14 +83,16 @@ export const LoginPage = (props: NavigationComponentProps) => {
           label={'E-mail'}
           onChangeText={setEmail}
           value={email}
-          isValid={isValidInput}
+          isEmailValid={isEmailInputValid}
+          errorEmailMessage={errorEmailMessage}
         />
         <InputComponent
           label={'Senha'}
           onChangeText={setPassword}
           value={password}
           secureTextEntry={true}
-          isValid={isValidInput}
+          isPasswordValid={isPasswordInputValid}
+          errorPasswordMessage={errorPasswordMessage}
         />
       </LoginInputWrapper>
       <ButtonComponent

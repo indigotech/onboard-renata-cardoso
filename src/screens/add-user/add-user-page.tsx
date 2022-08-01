@@ -7,13 +7,12 @@ import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
 import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
-  isBirthDateValid,
-  cpfHasValidLength,
-  isEmpty,
-  isEmailValid,
-  isPhoneValid,
-  isCpfValid,
-} from '../login/login-validation';
+  emailValidation,
+  nameValidation,
+  phoneValidation,
+  cpfValidation,
+  birthDateValidation,
+} from '../../utils/validations';
 import {
   H1,
   Container,
@@ -32,33 +31,60 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const [role, setRole] = useState('user');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
-  const [isValidInput, setIsValidInput] = useState(true);
+  const [errorEmailMessage, setErrorEmailMessage] = useState<string | null>(
+    null,
+  );
+  const [errorNameMessage, setErrorNameMessage] = useState<string | null>(null);
+  const [errorPhoneMessage, setErrorPhoneMessage] = useState<string | null>(
+    null,
+  );
+  const [errorCpfMessage, setErrorCpfMessage] = useState<string | null>(null);
+  const [errorBirthDateMessage, setErrorBirthDateMessage] = useState<
+    string | null
+  >(null);
 
-  const userValidation = () => {
-    if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
-      return 'Campos não devem estar vazios';
-    } else if (!isPhoneValid(phone)) {
-      return 'Telefone inválido';
-    } else if (!isEmailValid(email)) {
-      return 'Email inválido';
-    } else if (!cpfHasValidLength(cpf)) {
-      return 'CPF deve possuir 11 digitos';
-    } else if (!isCpfValid(cpf)) {
-      return 'CPF deve possuir apenas números';
-    } else if (!isBirthDateValid(birthDate)) {
-      return 'Data de Aniversário inválida';
-    } else {
-      return null;
-    }
-  };
+  const [isEmailInputValid, setIsEmailInputValid] = useState(true);
+  const [isNameInputValid, setIsNameInputValid] = useState(true);
+  const [isPhoneInputValid, setIsPhoneInputValid] = useState(true);
+  const [isCpfInputValid, setIsCpfInputValid] = useState(true);
+  const [isBirthDateInputValid, setIsBirthDateInputValid] = useState(true);
 
   const handleAddUser = async () => {
-    const errorAddUser = userValidation();
-    if (errorAddUser) {
-      setErrorMessage(errorAddUser);
-      setIsValidInput(false);
-    } else {
-      setIsValidInput(true);
+    const errorEmail = emailValidation(email);
+    const errorName = nameValidation(name);
+    const errorPhone = phoneValidation(phone);
+    const errorCpf = cpfValidation(cpf);
+    const errorBirthDate = birthDateValidation(birthDate);
+
+    errorEmail
+      ? (setIsEmailInputValid(false), setErrorEmailMessage(errorEmail))
+      : (setIsEmailInputValid(true), setErrorEmailMessage(null));
+
+    errorName
+      ? (setIsNameInputValid(false), setErrorNameMessage(errorName))
+      : (setIsNameInputValid(true), setErrorNameMessage(null));
+
+    errorPhone
+      ? (setIsPhoneInputValid(false), setErrorPhoneMessage(errorPhone))
+      : (setIsPhoneInputValid(true), setErrorPhoneMessage(null));
+
+    errorCpf
+      ? (setIsCpfInputValid(false), setErrorCpfMessage(errorCpf))
+      : (setIsCpfInputValid(true), setErrorCpfMessage(null));
+
+    errorBirthDate
+      ? (setIsBirthDateInputValid(false),
+        setErrorBirthDateMessage(errorBirthDate))
+      : (setIsBirthDateInputValid(true), setErrorBirthDateMessage(null));
+
+    if (
+      !errorEmail &&
+      !errorName &&
+      !errorPhone &&
+      !errorCpf &&
+      !errorBirthDate
+    ) {
+      setErrorMessage(null);
       try {
         await createUser({
           variables: {
@@ -90,35 +116,40 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'Name'}
           value={name}
           onChangeText={setName}
-          isValid={isValidInput}
+          isNameValid={isNameInputValid}
+          errorNameMessage={errorNameMessage}
           placeholder={'Your name'}
         />
         <InputComponent
           label={'Email'}
           value={email}
           onChangeText={setEmail}
-          isValid={isValidInput}
+          isEmailValid={isEmailInputValid}
+          errorEmailMessage={errorEmailMessage}
           placeholder={'user@email.com'}
         />
         <InputComponent
           label={'CPF'}
           value={cpf}
           onChangeText={setCpf}
-          isValid={isValidInput}
+          isCpfValid={isCpfInputValid}
+          errorCpfMessage={errorCpfMessage}
           placeholder={'00000000000'}
         />
         <InputComponent
           label={'Phone'}
           value={phone}
           onChangeText={setPhone}
-          isValid={isValidInput}
+          isPhoneValid={isPhoneInputValid}
+          errorPhoneMessage={errorPhoneMessage}
           placeholder={'DD000000000'}
         />
         <InputComponent
           label={'Birth Date'}
           value={birthDate}
           onChangeText={setBirthDate}
-          isValid={isValidInput}
+          isBirthDateValid={isBirthDateInputValid}
+          errorBirthDateMessage={errorBirthDateMessage}
           placeholder={'YYYY-MM-DD'}
         />
         <AddUserRadioButtonsWrapper>
