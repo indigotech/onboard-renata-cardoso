@@ -55,8 +55,8 @@ export const UserDetailsInfoWrapper = styled.View`
 
 export const UserDetailsInfoText = styled.Text`
   color: #000000;
-  font-size: 16px
-  background-color: #e9e9e9;
+  font-size: 18px
+  background-color: #fff;
   padding: 8px 12px 8px 12px;
   margin-top: 2px;
 `;
