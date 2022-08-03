@@ -85,6 +85,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           value={email}
           isEmailValid={isEmailInputValid}
           errorEmailMessage={errorEmailMessage}
+          isValid={isEmailInputValid}
         />
         <InputComponent
           label={'Senha'}
@@ -93,6 +94,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           secureTextEntry={true}
           isPasswordValid={isPasswordInputValid}
           errorPasswordMessage={errorPasswordMessage}
+          isValid={isPasswordInputValid}
         />
       </LoginInputWrapper>
       <ButtonComponent

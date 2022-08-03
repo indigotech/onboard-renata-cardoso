@@ -16,6 +16,7 @@ export type InputComponentProps = TextInputProps & {
   errorCpfMessage?: string | null;
   errorNameMessage?: string | null;
   errorPhoneMessage?: string | null;
+  isValid?: boolean;
 };
 
 export const InputComponent = ({
@@ -32,6 +33,7 @@ export const InputComponent = ({
   errorCpfMessage,
   errorNameMessage,
   errorPhoneMessage,
+  isValid,
   ...textInputProps
 }: InputComponentProps) => {
   return (
@@ -42,7 +44,8 @@ export const InputComponent = ({
         isNameValid={isNameValid}
         isBirthDateValid={isBirthDateValid}
         isCpfValid={isCpfValid}
-        isPhoneValid={isPhoneValid}>
+        isPhoneValid={isPhoneValid}
+        isValid={isValid}>
         {label}
       </LabelStyled>
       <InputStyled
@@ -52,6 +55,7 @@ export const InputComponent = ({
         isBirthDateValid={isBirthDateValid}
         isCpfValid={isCpfValid}
         isPhoneValid={isPhoneValid}
+        isValid={isValid}
         {...textInputProps}
       />
       <CaptionStyled>

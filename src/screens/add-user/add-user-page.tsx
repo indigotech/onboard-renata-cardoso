@@ -118,6 +118,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onChangeText={setName}
           isNameValid={isNameInputValid}
           errorNameMessage={errorNameMessage}
+          isValid={isNameInputValid}
           placeholder={'Your name'}
         />
         <InputComponent
@@ -126,6 +127,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onChangeText={setEmail}
           isEmailValid={isEmailInputValid}
           errorEmailMessage={errorEmailMessage}
+          isValid={isEmailInputValid}
           placeholder={'user@email.com'}
         />
         <InputComponent
@@ -134,6 +136,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onChangeText={setCpf}
           isCpfValid={isCpfInputValid}
           errorCpfMessage={errorCpfMessage}
+          isValid={isCpfInputValid}
           placeholder={'00000000000'}
         />
         <InputComponent
@@ -142,6 +145,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onChangeText={setPhone}
           isPhoneValid={isPhoneInputValid}
           errorPhoneMessage={errorPhoneMessage}
+          isValid={isPhoneInputValid}
           placeholder={'DD000000000'}
         />
         <InputComponent
@@ -150,6 +154,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           onChangeText={setBirthDate}
           isBirthDateValid={isBirthDateInputValid}
           errorBirthDateMessage={errorBirthDateMessage}
+          isValid={isBirthDateInputValid}
           placeholder={'YYYY-MM-DD'}
         />
         <AddUserRadioButtonsWrapper>
