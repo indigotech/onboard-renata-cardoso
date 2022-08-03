@@ -1,8 +1,13 @@
 import {useQuery} from '@apollo/client';
 import React from 'react';
-import {FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import {GET_USER} from '../../utils/requests';
-import {styleUser} from './user-page.styles';
+import {
+  UserListContainer,
+  UserListText,
+  UserListProfileButton,
+  UserListProfileText,
+} from '../../styles/screens.styles';
 import {FAB} from 'react-native-paper';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {AddUserPage} from '../add-user/add-user-page';
@@ -62,12 +67,13 @@ export const UserPage = (props: NavigationComponentProps) => {
 
   const renderUser = ({item}: {item: User}) => {
     return (
-      <TouchableOpacity onPress={() => handleUserDetails(item.id)}>
-        <View style={styleUser.container}>
-          <Text style={styleUser.text}>Name: {item.name}</Text>
-          <Text style={styleUser.text}>Email: {item.email}</Text>
-        </View>
-      </TouchableOpacity>
+      <UserListContainer>
+        <UserListText>Name: {item.name}</UserListText>
+        <UserListText>E-mail: {item.email}</UserListText>
+        <UserListProfileButton onPress={() => handleUserDetails(item.id)}>
+          <UserListProfileText>Profile</UserListProfileText>
+        </UserListProfileButton>
+      </UserListContainer>
     );
   };
 
@@ -79,9 +85,20 @@ export const UserPage = (props: NavigationComponentProps) => {
         keyExtractor={keyExtractor}
         onEndReached={handleLoadMore}
       />
-      <FAB icon="plus" style={styleUser.fab} onPress={handleAddUser} />
+      <FAB icon="plus" style={style.fab} onPress={handleAddUser} />
     </View>
   );
 };
 
 UserPage.options = {topBar: {title: {text: 'User List'}}};
+
+export const style = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    marginBottom: 20,
+    marginRight: 20,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#6550FF',
+  },
+});

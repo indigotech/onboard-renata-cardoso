@@ -1,35 +1,71 @@
 import React from 'react';
-import {Text, View, TextInput, TextInputProps} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {View, TextInputProps} from 'react-native';
+import {LabelStyled, InputStyled, CaptionStyled} from './input.component.style';
 
-type Props = TextInputProps & {
+export type InputComponentProps = TextInputProps & {
   label: string;
+  isEmailValid?: boolean;
+  isPasswordValid?: boolean;
+  isBirthDateValid?: boolean;
+  isCpfValid?: boolean;
+  isNameValid?: boolean;
+  isPhoneValid?: boolean;
+  errorEmailMessage?: string | null;
+  errorPasswordMessage?: string | null;
+  errorBirthDateMessage?: string | null;
+  errorCpfMessage?: string | null;
+  errorNameMessage?: string | null;
+  errorPhoneMessage?: string | null;
+  isValid?: boolean;
 };
 
-export const InputComponent = ({label, ...rest}: Props) => {
+export const InputComponent = ({
+  label,
+  isEmailValid,
+  isPasswordValid,
+  isBirthDateValid,
+  isNameValid,
+  isCpfValid,
+  isPhoneValid,
+  errorEmailMessage,
+  errorPasswordMessage,
+  errorBirthDateMessage,
+  errorCpfMessage,
+  errorNameMessage,
+  errorPhoneMessage,
+  isValid,
+  ...textInputProps
+}: InputComponentProps) => {
   return (
     <View>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} {...rest} />
+      <LabelStyled
+        isEmailValid={isEmailValid}
+        isPasswordValid={isPasswordValid}
+        isNameValid={isNameValid}
+        isBirthDateValid={isBirthDateValid}
+        isCpfValid={isCpfValid}
+        isPhoneValid={isPhoneValid}
+        isValid={isValid}>
+        {label}
+      </LabelStyled>
+      <InputStyled
+        isEmailValid={isEmailValid}
+        isPasswordValid={isPasswordValid}
+        isNameValid={isNameValid}
+        isBirthDateValid={isBirthDateValid}
+        isCpfValid={isCpfValid}
+        isPhoneValid={isPhoneValid}
+        isValid={isValid}
+        {...textInputProps}
+      />
+      <CaptionStyled>
+        {!isEmailValid && errorEmailMessage}
+        {!isPasswordValid && errorPasswordMessage}
+        {!isNameValid && errorNameMessage}
+        {!isBirthDateValid && errorBirthDateMessage}
+        {!isCpfValid && errorCpfMessage}
+        {!isPhoneValid && errorPhoneMessage}
+      </CaptionStyled>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 18,
-    color: '#000',
-    marginTop: 24,
-    marginHorizontal: 20,
-  },
-  input: {
-    width: 340,
-    height: 50,
-    borderRadius: 16,
-    fontSize: 13,
-    marginTop: 4,
-    borderWidth: 2,
-    borderColor: '#cecece',
-    marginHorizontal: 20,
-  },
-});
