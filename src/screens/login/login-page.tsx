@@ -83,8 +83,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           label={'E-mail'}
           onChangeText={setEmail}
           value={email}
-          isEmailValid={isEmailInputValid}
-          errorEmailMessage={errorEmailMessage}
+          errorMessage={errorEmailMessage}
           isValid={isEmailInputValid}
         />
         <InputComponent
@@ -92,8 +91,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           onChangeText={setPassword}
           value={password}
           secureTextEntry={true}
-          isPasswordValid={isPasswordInputValid}
-          errorPasswordMessage={errorPasswordMessage}
+          errorMessage={errorPasswordMessage}
           isValid={isPasswordInputValid}
         />
       </LoginInputWrapper>

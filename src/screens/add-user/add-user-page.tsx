@@ -116,8 +116,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'Name'}
           value={name}
           onChangeText={setName}
-          isNameValid={isNameInputValid}
-          errorNameMessage={errorNameMessage}
+          errorMessage={errorNameMessage}
           isValid={isNameInputValid}
           placeholder={'Your name'}
         />
@@ -125,8 +124,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'Email'}
           value={email}
           onChangeText={setEmail}
-          isEmailValid={isEmailInputValid}
-          errorEmailMessage={errorEmailMessage}
+          errorMessage={errorEmailMessage}
           isValid={isEmailInputValid}
           placeholder={'user@email.com'}
         />
@@ -134,8 +132,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'CPF'}
           value={cpf}
           onChangeText={setCpf}
-          isCpfValid={isCpfInputValid}
-          errorCpfMessage={errorCpfMessage}
+          errorMessage={errorCpfMessage}
           isValid={isCpfInputValid}
           placeholder={'00000000000'}
         />
@@ -143,8 +140,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'Phone'}
           value={phone}
           onChangeText={setPhone}
-          isPhoneValid={isPhoneInputValid}
-          errorPhoneMessage={errorPhoneMessage}
+          errorMessage={errorPhoneMessage}
           isValid={isPhoneInputValid}
           placeholder={'DD000000000'}
         />
@@ -152,8 +148,7 @@ export const AddUserPage = (props: NavigationComponentProps) => {
           label={'Birth Date'}
           value={birthDate}
           onChangeText={setBirthDate}
-          isBirthDateValid={isBirthDateInputValid}
-          errorBirthDateMessage={errorBirthDateMessage}
+          errorMessage={errorBirthDateMessage}
           isValid={isBirthDateInputValid}
           placeholder={'YYYY-MM-DD'}
         />
