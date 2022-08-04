@@ -1,20 +1,26 @@
 import {useMutation} from '@apollo/client';
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {Navigation, NavigationComponentProps} from 'react-native-navigation';
 import {RadioButton} from 'react-native-paper';
 import {ButtonComponent} from '../../components/button.component';
 import {InputComponent} from '../../components/input.component';
 import {ADD_USER_MUTATION} from '../../utils/requests';
 import {
-  isBirthDateValid,
-  cpfHasValidLength,
-  isEmpty,
-  emailIsValid,
-  isPhoneValid,
-} from '../login/login-validation';
-import {UserPage} from '../users/user-page';
-import {styleAddUser} from './add-user-page.styles';
+  emailValidation,
+  nameValidation,
+  phoneValidation,
+  cpfValidation,
+  birthDateValidation,
+} from '../../utils/validations';
+import {
+  H1,
+  Container,
+  AddUserTextRadioButtons,
+  AddUserRadioButtonsWrapper,
+  TextError,
+} from '../../styles/screens.styles';
+import {isGraphQLError} from '../login/login-page';
 
 export const AddUserPage = (props: NavigationComponentProps) => {
   const [name, setName] = useState('');
@@ -23,28 +29,62 @@ export const AddUserPage = (props: NavigationComponentProps) => {
   const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('user');
-  const [errorMessage, setErrorMessage] = useState(['', false]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [createUser, {loading}] = useMutation(ADD_USER_MUTATION);
+  const [errorEmailMessage, setErrorEmailMessage] = useState<string | null>(
+    null,
+  );
+  const [errorNameMessage, setErrorNameMessage] = useState<string | null>(null);
+  const [errorPhoneMessage, setErrorPhoneMessage] = useState<string | null>(
+    null,
+  );
+  const [errorCpfMessage, setErrorCpfMessage] = useState<string | null>(null);
+  const [errorBirthDateMessage, setErrorBirthDateMessage] = useState<
+    string | null
+  >(null);
 
-  const userValidation = () => {
-    if ([name, email, phone, birthDate, cpf, role].some(isEmpty)) {
-      setErrorMessage(['Campos não devem estar vazios', false]);
-    } else if (!isPhoneValid(phone)) {
-      setErrorMessage(['Telefone inválido', false]);
-    } else if (!emailIsValid(email)) {
-      setErrorMessage(['Email inválido', false]);
-    } else if (!cpfHasValidLength(cpf)) {
-      setErrorMessage(['CPF deve possuir 11 digitos', false]);
-    } else if (!isBirthDateValid(birthDate)) {
-      setErrorMessage(['Data de Aniversário inválida', false]);
-    } else {
-      setErrorMessage(['', true]);
-    }
-  };
+  const [isEmailInputValid, setIsEmailInputValid] = useState(true);
+  const [isNameInputValid, setIsNameInputValid] = useState(true);
+  const [isPhoneInputValid, setIsPhoneInputValid] = useState(true);
+  const [isCpfInputValid, setIsCpfInputValid] = useState(true);
+  const [isBirthDateInputValid, setIsBirthDateInputValid] = useState(true);
 
   const handleAddUser = async () => {
-    userValidation();
-    if (errorMessage[1] === true) {
+    const errorEmail = emailValidation(email);
+    const errorName = nameValidation(name);
+    const errorPhone = phoneValidation(phone);
+    const errorCpf = cpfValidation(cpf);
+    const errorBirthDate = birthDateValidation(birthDate);
+
+    errorEmail
+      ? (setIsEmailInputValid(false), setErrorEmailMessage(errorEmail))
+      : (setIsEmailInputValid(true), setErrorEmailMessage(null));
+
+    errorName
+      ? (setIsNameInputValid(false), setErrorNameMessage(errorName))
+      : (setIsNameInputValid(true), setErrorNameMessage(null));
+
+    errorPhone
+      ? (setIsPhoneInputValid(false), setErrorPhoneMessage(errorPhone))
+      : (setIsPhoneInputValid(true), setErrorPhoneMessage(null));
+
+    errorCpf
+      ? (setIsCpfInputValid(false), setErrorCpfMessage(errorCpf))
+      : (setIsCpfInputValid(true), setErrorCpfMessage(null));
+
+    errorBirthDate
+      ? (setIsBirthDateInputValid(false),
+        setErrorBirthDateMessage(errorBirthDate))
+      : (setIsBirthDateInputValid(true), setErrorBirthDateMessage(null));
+
+    if (
+      !errorEmail &&
+      !errorName &&
+      !errorPhone &&
+      !errorCpf &&
+      !errorBirthDate
+    ) {
+      setErrorMessage(null);
       try {
         await createUser({
           variables: {
@@ -57,49 +97,83 @@ export const AddUserPage = (props: NavigationComponentProps) => {
             },
           },
         });
-        Navigation.push(props.componentId, {
-          component: UserPage,
-        });
-      } catch (error: any) {
-        setErrorMessage([error, false]);
+        Navigation.pop(props.componentId);
+      } catch (error: unknown) {
+        if (isGraphQLError(error)) {
+          setErrorMessage(error.graphQLErrors[0].message);
+        } else {
+          setErrorMessage('Algo deu errado');
+        }
       }
     }
   };
 
   return (
-    <View style={styleAddUser.container}>
-      <InputComponent label={'Name'} value={name} onChangeText={setName} />
-      <InputComponent label={'Email'} value={email} onChangeText={setEmail} />
-      <InputComponent label={'CPF'} value={cpf} onChangeText={setCpf} />
-      <InputComponent label={'Phone'} value={phone} onChangeText={setPhone} />
-      <InputComponent
-        label={'Birth Date'}
-        value={birthDate}
-        onChangeText={setBirthDate}
-      />
-      <View style={styleAddUser.radioButtons}>
-        <Text style={styleAddUser.textRadio}>User</Text>
-        <RadioButton
-          value="user"
-          status={role === 'user' ? 'checked' : 'unchecked'}
-          onPress={() => setRole('user')}
+    <ScrollView>
+      <Container>
+        <H1>Create User</H1>
+        <InputComponent
+          label={'Name'}
+          value={name}
+          onChangeText={setName}
+          errorMessage={errorNameMessage}
+          isValid={isNameInputValid}
+          placeholder={'Your name'}
         />
-        <Text style={styleAddUser.textRadio}>Admin</Text>
-        <RadioButton
-          value="admin"
-          status={role === 'admin' ? 'checked' : 'unchecked'}
-          onPress={() => setRole('admin')}
+        <InputComponent
+          label={'Email'}
+          value={email}
+          onChangeText={setEmail}
+          errorMessage={errorEmailMessage}
+          isValid={isEmailInputValid}
+          placeholder={'user@email.com'}
         />
-      </View>
-      <ButtonComponent
-        text={'Create User'}
-        onPress={handleAddUser}
-        loading={loading}
-      />
-      <Text style={styleAddUser.textError}>
-        {errorMessage ? errorMessage : ''}
-      </Text>
-    </View>
+        <InputComponent
+          label={'CPF'}
+          value={cpf}
+          onChangeText={setCpf}
+          errorMessage={errorCpfMessage}
+          isValid={isCpfInputValid}
+          placeholder={'00000000000'}
+        />
+        <InputComponent
+          label={'Phone'}
+          value={phone}
+          onChangeText={setPhone}
+          errorMessage={errorPhoneMessage}
+          isValid={isPhoneInputValid}
+          placeholder={'DD000000000'}
+        />
+        <InputComponent
+          label={'Birth Date'}
+          value={birthDate}
+          onChangeText={setBirthDate}
+          errorMessage={errorBirthDateMessage}
+          isValid={isBirthDateInputValid}
+          placeholder={'YYYY-MM-DD'}
+        />
+        <AddUserRadioButtonsWrapper>
+          <AddUserTextRadioButtons>User</AddUserTextRadioButtons>
+          <RadioButton
+            value="user"
+            status={role === 'user' ? 'checked' : 'unchecked'}
+            onPress={() => setRole('user')}
+          />
+          <AddUserTextRadioButtons>Admin</AddUserTextRadioButtons>
+          <RadioButton
+            value="admin"
+            status={role === 'admin' ? 'checked' : 'unchecked'}
+            onPress={() => setRole('admin')}
+          />
+        </AddUserRadioButtonsWrapper>
+        <ButtonComponent
+          text={'Create User'}
+          onPress={handleAddUser}
+          loading={loading}
+        />
+        {errorMessage && <TextError>{errorMessage}</TextError>}
+      </Container>
+    </ScrollView>
   );
 };
 

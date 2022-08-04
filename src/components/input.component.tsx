@@ -1,35 +1,24 @@
 import React from 'react';
-import {Text, View, TextInput, TextInputProps} from 'react-native';
-import {StyleSheet} from 'react-native';
+import {View, TextInputProps} from 'react-native';
+import {LabelStyled, InputStyled, CaptionStyled} from './input.component.style';
 
-type Props = TextInputProps & {
+export type InputComponentProps = TextInputProps & {
   label: string;
+  errorMessage?: string | null;
+  isValid?: boolean;
 };
 
-export const InputComponent = ({label, ...rest}: Props) => {
+export const InputComponent = ({
+  label,
+  errorMessage,
+  isValid,
+  ...textInputProps
+}: InputComponentProps) => {
   return (
     <View>
-      <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} {...rest} />
+      <LabelStyled isValid={isValid}>{label}</LabelStyled>
+      <InputStyled isValid={isValid} {...textInputProps} />
+      <CaptionStyled>{!isValid && errorMessage}</CaptionStyled>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  label: {
-    fontSize: 18,
-    color: '#000',
-    marginTop: 24,
-    marginHorizontal: 20,
-  },
-  input: {
-    width: 340,
-    height: 50,
-    borderRadius: 16,
-    fontSize: 13,
-    marginTop: 4,
-    borderWidth: 2,
-    borderColor: '#cecece',
-    marginHorizontal: 20,
-  },
-});
