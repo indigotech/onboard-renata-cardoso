@@ -37,23 +37,22 @@ export const LoginPage = (props: NavigationComponentProps) => {
     string | null
   >(null);
 
-  const [isEmailInputValid, setIsEmailInputValid] = useState(true);
-  const [isPasswordInputValid, setIsPasswordInputValid] = useState(true);
-
   const [login, {loading}] = useMutation(LOGIN_MUTATION);
 
   const handleSubmit = async () => {
     const errorEmail = emailValidation(email);
     const errorPassword = passwordValidation(password);
 
-    errorEmail
-      ? (setIsEmailInputValid(false), setErrorEmailMessage(errorEmail))
-      : (setIsEmailInputValid(true), setErrorEmailMessage(null));
-
-    errorPassword
-      ? (setIsPasswordInputValid(false), setErrorPasswordMessage(errorPassword))
-      : (setIsPasswordInputValid(true), setErrorPasswordMessage(null));
-
+    if (errorEmail) {
+      setErrorEmailMessage(errorEmail);
+    } else {
+      setErrorEmailMessage(null);
+    }
+    if (errorPassword) {
+      setErrorPasswordMessage(errorPassword);
+    } else {
+      setErrorPasswordMessage(null);
+    }
     if (!errorEmail && !errorPassword) {
       setErrorMessage(null);
       try {
@@ -84,7 +83,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           onChangeText={setEmail}
           value={email}
           errorMessage={errorEmailMessage}
-          isValid={isEmailInputValid}
+          isValid={!errorEmailMessage}
         />
         <InputComponent
           label={'Senha'}
@@ -92,7 +91,7 @@ export const LoginPage = (props: NavigationComponentProps) => {
           value={password}
           secureTextEntry={true}
           errorMessage={errorPasswordMessage}
-          isValid={isPasswordInputValid}
+          isValid={!errorPasswordMessage}
         />
       </LoginInputWrapper>
       <ButtonComponent
